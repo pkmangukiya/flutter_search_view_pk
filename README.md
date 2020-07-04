@@ -10,7 +10,17 @@ Awesome search view, written in Flutter(Dart), appears search view like Instagra
 
 ## How to integreat source?
 
-Directly drag and drop the `pk_search_bar` directory into your Flutter project.
+1 : Directly drag and drop the `pk_search_bar` directory into your Flutter project.
+
+2 : Create a Class SearchScreen and in build > Scaffold > child: SearchBar()
+
+``` 
+Navigator.push(
+  context,
+  MaterialPageRoute(
+      builder: (context) =>  SearchScreen()),
+);
+``` 
 
 ## Example
 
@@ -210,5 +220,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return suggestionList;
   }
-}```
+}
 
+```
+
+
+
+**Inspired by and just improvement some points and changes https://github.com/smartnsoft/flappy_search_bar**
