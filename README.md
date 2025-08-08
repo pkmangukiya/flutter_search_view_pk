@@ -1,45 +1,45 @@
-# flutter_search_view_pk
 
+# 🚀 flutter_search_view_pk
 
-A search view with auto-complete suggestions. and Easiest way to search from API
+A **custom search view** for Flutter with auto-complete suggestions and easy API integration — inspired by Instagram’s search experience.
 
-Awesome search view, written in Flutter(Dart), appears search view like Instagram Search view. You can fully customize this repository. You can use this repository with any flutter! project See usage in below
+This widget is fully customizable and can be easily plugged into any Flutter project.
 
+![Demo GIF](https://user-images.githubusercontent.com/45510447/86524982-c7895d80-be9e-11ea-92ab-6608c5e73831.gif)
 
-![ezgif com-video-to-gif](https://user-images.githubusercontent.com/45510447/86524982-c7895d80-be9e-11ea-92ab-6608c5e73831.gif)
+---
 
+## 🧩 How to Integrate
 
-## How to integreat source?
+1. **Drag and drop** the `pk_search_bar` directory directly into your Flutter project.
 
-1 : Directly drag and drop the `pk_search_bar` directory into your Flutter project.
+2. **Create a `SearchScreen` class** and use `SearchBar()` inside the `Scaffold`.
 
-2 : Create a Class SearchScreen and in build > Scaffold > child: SearchBar()
-
-``` 
+```dart
 Navigator.push(
   context,
   MaterialPageRoute(
-      builder: (context) =>  SearchScreen()),
+    builder: (context) => SearchScreen(),
+  ),
 );
-``` 
+```
 
-## Example
+---
 
-``` 
+## 💡 Example Usage
+
+```dart
 class SearchScreen extends StatefulWidget {
-
   final List<CountryModel> countryModelList;
+  const SearchScreen(this.countryModelList);
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
-
-  const SearchScreen(this.countryModelList);
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -48,183 +48,127 @@ class _SearchScreenState extends State<SearchScreen> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return Scaffold(
       body: SafeArea(
-          bottom: false,
-          child: Container(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: searchBar(context)),
-          )),
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: searchBar(context),
+        ),
+      ),
     );
   }
 
-  // TODO: CountrySearchBar
+  /// Main Search Widget
   Widget searchBar(BuildContext context) {
     return SearchBar<CountryModel>(
-      searchBarPadding: EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 5),
-      headerPadding: EdgeInsets.only(left: 0, right: 0),
-      listPadding: EdgeInsets.only(left: 0, right: 0),
+      searchBarPadding: const EdgeInsets.all(10),
+      headerPadding: EdgeInsets.zero,
+      listPadding: EdgeInsets.zero,
       hintText: "Search Placeholder",
-      hintStyle: TextStyle(
-        color: Colors.black54,
-      ),
-      textStyle: TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.normal,
-      ),
+      hintStyle: const TextStyle(color: Colors.black54),
+      textStyle: const TextStyle(color: Colors.black),
       iconActiveColor: Colors.deepPurple,
       shrinkWrap: true,
       mainAxisSpacing: 5,
       crossAxisSpacing: 5,
       suggestions: widget.countryModelList,
-      cancellationWidget: Text("Cancel"),
+      cancellationWidget: const Text("Cancel"),
       minimumChars: 1,
-//      placeHolder: Center(
-//        child: Padding(
-//          padding: const EdgeInsets.only(left: 10, right: 10),
-//          child: Text(searchMessage, textAlign: TextAlign.center, style: CustomTextStyle.textSubtitle1(context).copyWith(fontSize: 14),),
-//        ),
-//      ),
-      emptyWidget: Center(
+      emptyWidget: const Center(
         child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Text("There is no any data found"),
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Text("There is no data found"),
         ),
       ),
-      onError: (error) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Text("$error", textAlign: TextAlign.center),
-          ),
-        );
-      },
-      loader: Center(
-        child: LoadingIndicator(),
+      onError: (error) => Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text("\$error", textAlign: TextAlign.center),
+        ),
       ),
-      onSearch: getCountrySearchWithSuggestion, /// CountrySearch  // if want to search with API then use thi ----> getCountryListFromApi
-      onCancelled: () {
-        Navigator.pop(context);
-      },
-      buildSuggestion: (CountryModel countryModel, int index) {
-        return countryGenerateColumn(countryModel, index);
-      },
-      onItemFound: (CountryModel countryModel, int index) {
-        return countryGenerateColumn(countryModel, index);
-      },
+      loader: const Center(child: LoadingIndicator()),
+      onSearch: getCountrySearchWithSuggestion,
+      onCancelled: () => Navigator.pop(context),
+      buildSuggestion: (country, index) => countryGenerateColumn(country, index),
+      onItemFound: (country, index) => countryGenerateColumn(country, index),
     );
   }
 
-  Widget countryGenerateColumn(CountryModel countryModel, int index) => InkWell(
-    child: Stack(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(
-              left: 5.0, top: 5.0, right: 5.0, bottom: 5.0),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight: 50,
+  /// Search Result UI Widget
+  Widget countryGenerateColumn(CountryModel country, int index) => InkWell(
+    child: Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 50),
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(country.countryName, maxLines: 1, overflow: TextOverflow.ellipsis),
+                  Text(country.countryCode, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  const SizedBox(height: 8),
+                  const Divider(height: 0.5),
+                ],
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(8.0, 5.0, 0.0, 5.0),
-                  width: MediaQuery.of(context).size.width * .60,
-                  color: Colors.transparent,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(countryModel.countryName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis
-                      ),
-                      Text(
-                        countryModel.countryCode,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 8),
-                      Divider(height: 0.5)
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          ],
         ),
-      ],
+      ),
     ),
   );
 
-
-//  Future<List<CountryModel>> getCountryListFromApi(String search) async {
-//    var _param = {
-//      "search_value":search,
-//      "user_token": "",
-//    };
-//    print("Resident search = $search");
-//    if (search == "empty") return [];
-//    if (search == "error") throw Error();
-//
-//    var response = await ApiManager.instance
-//        .postAPICall(BASE_URL_Local + get_search_country_list, _param, context);
-//    var data = response["data"];
-//    List<CountryModel> countryModelList = [];
-//    for (var u in data) {
-//      CountryModel countryModel = CountryModel(
-//        u["countryName"],
-//        u["countryCode"]
-//      );
-//      countryModelList.add(countryModel);
-//    }
-//    return countryModelList;
-//  }
-
+  /// For local list search
   Future<List<CountryModel>> getCountrySearch(String search) async {
-    print("Resident search = $search");
     if (search == "empty") return [];
     if (search == "error") throw Error();
-    List<CountryModel> filterCountryList = [];
-
-    widget.countryModelList.forEach((CountryModel) {
-      if (CountryModel.countryName
-          .toLowerCase()
-          .contains(search.toLowerCase()) ||
-          CountryModel.countryCode
-              .toLowerCase()
-              .contains(search.toLowerCase()))
-        filterCountryList.add(CountryModel);
-    });
-
-    return filterCountryList;
+    return widget.countryModelList.where((country) {
+      final name = country.countryName.toLowerCase();
+      final code = country.countryCode.toLowerCase();
+      final term = search.toLowerCase();
+      return name.contains(term) || code.contains(term);
+    }).toList();
   }
 
-  Future<List<CountryModel>> getCountrySearchWithSuggestion(
-      String search) async {
-    print("Resident search = $search");
+  /// With suggestion support
+  Future<List<CountryModel>> getCountrySearchWithSuggestion(String search) async {
     if (search == "empty") return [];
     if (search == "error") throw Error();
-    List<CountryModel> filterCountryList = [];
-
-    widget.countryModelList.forEach((CountryModel) {
-      if (CountryModel.countryName
-          .toLowerCase()
-          .contains(search.toLowerCase()) ||
-          CountryModel.countryCode
-              .toLowerCase()
-              .contains(search.toLowerCase()))
-        filterCountryList.add(CountryModel);
-    });
-
-    final suggestionList =
-    search.isEmpty ? widget.countryModelList : filterCountryList;
-
-    return suggestionList;
+    final filterList = widget.countryModelList.where((country) {
+      final name = country.countryName.toLowerCase();
+      final code = country.countryCode.toLowerCase();
+      final term = search.toLowerCase();
+      return name.contains(term) || code.contains(term);
+    }).toList();
+    return search.isEmpty ? widget.countryModelList : filterList;
   }
+
+  /*
+  /// Uncomment if you want to search via API
+  Future<List<CountryModel>> getCountryListFromApi(String search) async {
+    final params = {
+      "search_value": search,
+      "user_token": "",
+    };
+
+    final response = await ApiManager.instance.postAPICall(
+      BASE_URL_Local + get_search_country_list,
+      params,
+      context,
+    );
+
+    final data = response["data"];
+    return data.map<CountryModel>((u) => CountryModel(u["countryName"], u["countryCode"])).toList();
+  }
+  */
 }
-
 ```
 
+---
 
+## 🔗 Inspired by
 
-**Inspired by and just improvement some points and changes https://github.com/smartnsoft/flappy_search_bar**
+This package was originally inspired by:  
+👉 [flappy_search_bar by SmartnSoft](https://github.com/smartnsoft/flappy_search_bar)
